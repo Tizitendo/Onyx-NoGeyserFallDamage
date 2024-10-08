@@ -1,0 +1,10 @@
+{
+	"name": "No Geyser Fall Damage",
+	"version_number": "1.0.0",
+	"website_url": "https://github.com/Tizitendo/ArtificerPluse",
+	"description": "Removes fall damage after using a geyser",
+	"dependencies": [
+		"ReturnOfModding-ReturnOfModding-1.0.32",
+		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.1.9"
+	]
+}
