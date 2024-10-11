@@ -1,4 +1,4 @@
--- NoGeyserFallDamage v1.1
+-- NoGeyserFallDamage v1.1.0
 -- Onyx
 log.info("Successfully loaded " .. _ENV["!guid"] .. ".")
 mods.on_all_mods_loaded(function()
