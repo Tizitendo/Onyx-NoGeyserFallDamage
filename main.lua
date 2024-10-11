@@ -25,12 +25,10 @@ __initialize = function()
         -- remove airborne after landing
         if Airborne and player:is_grounded() then
             Airborne = false
-            log.info("landed")
         end
         -- set airborne after colliding with geyser
         if player ~= nil and player:is_colliding(Object.find("ror-geyser")) then
             Airborne = true
-            log.info("geyser")
         end
     end)
 
