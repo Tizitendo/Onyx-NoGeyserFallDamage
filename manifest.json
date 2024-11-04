@@ -1,10 +1,11 @@
 {
 	"name": "No_Geyser_Fall_Damage",
-	"version_number": "1.1.1",
+	"version_number": "1.2.0",
 	"website_url": "https://github.com/Tizitendo/Onyx-NoGeyserFallDamage",
 	"description": "Removes fall damage after using a geyser",
 	"dependencies": [
-		"ReturnOfModding-ReturnOfModding-1.0.32",
-		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.1.9"
+		"ReturnOfModding-ReturnOfModding-1.0.48",
+		"RoRRModdingToolkit-RoRR_Modding_Toolkit-1.1.24",
+		"SmoothSpatula-TomlHelper-1.0.1"
 	]
 }

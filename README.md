@@ -1,6 +1,7 @@
 # Onyx-NoGeyserFallDamage
 
 - Removes fall damage taken after using a geyser
+- Gives players higher control over when to use geysers by only enabling them while the jump button is pressed (can be toggled off)
 
 ## Special Thanks To
 * The Return Of Modding Discord
