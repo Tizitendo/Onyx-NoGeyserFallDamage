@@ -19,7 +19,7 @@ local player = nil
 local Airborne = false
 local Geyser = nil
 
-__initialize = function()
+Initialize(function()
     Callback.add("onPlayerInit", "No_Geyser_FallDamage-onPlayerInit", function()
         player = Player.get_client()
     end)
@@ -81,7 +81,7 @@ __initialize = function()
             end
         end
     end)
-end
+end)
 
 -- set immune for 1 frame when landing
 gm.pre_script_hook(gm.constants.damage_inflict, function(self, other, result, args)
