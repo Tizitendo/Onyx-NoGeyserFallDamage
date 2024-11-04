@@ -24,7 +24,7 @@ Initialize(function()
         player = Player.get_client()
     end)
 
-    Callback.add("onPlayerStep", "geyserfalldamage", function()
+    Callback.add("onPlayerStep", "No_Geyser_FallDamage-onPlayerStep", function()
         -- remove airborne after landing
         if Airborne and player:is_grounded() then
             Airborne = false
@@ -67,7 +67,11 @@ Initialize(function()
                     if Geyser.disabled == nil or Geyser.disabled == 0 then
                         Geyser.jump_force_default = Geyser.jump_force
                     end
-                    Geyser.jump_force = -player.pVspeed
+                    if player:is_grounded() then
+                        Geyser.jump_force = -2
+                    else
+                        Geyser.jump_force = -player.pVspeed
+                    end
                     Geyser.sound_cd_frame = 1000000 + Geyser.sound_cd_frame
                     Geyser.disabled = 1
                 else
