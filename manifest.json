@@ -1,6 +1,6 @@
 {
 	"name": "No_Geyser_Fall_Damage",
-	"version_number": "1.2.0",
+	"version_number": "1.2.1",
 	"website_url": "https://github.com/Tizitendo/Onyx-NoGeyserFallDamage",
 	"description": "Removes fall damage after using a geyser",
 	"dependencies": [

@@ -1,5 +1,3 @@
--- NoGeyserFallDamage v1.2.0
--- Onyx
 log.info("Successfully loaded " .. _ENV["!guid"] .. ".")
 params = {}
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()
