@@ -1,3 +1,7 @@
+## 1.3.0
+* Fixed enemies surfing geysers
+* multiplayer compatible
+
 ## 1.2.1
 * mitigated enemies surfing the geyser as much as possible
 

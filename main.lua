@@ -1,6 +1,6 @@
 log.info("Successfully loaded " .. _ENV["!guid"] .. ".")
 params = {}
-mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto()
+mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
 mods.on_all_mods_loaded(function()
     for k, v in pairs(mods) do
         if type(v) == "table" and v.tomlfuncs then
@@ -16,7 +16,6 @@ end)
 local player = nil
 local Airborne = false
 local Geyser = nil
-
 Initialize(function()
     Callback.add("onPlayerInit", "No_Geyser_FallDamage-onPlayerInit", function()
         player = Player.get_client()
@@ -38,16 +37,8 @@ Initialize(function()
 
         if params.JumpToGeyser then
             --Get colldiding Geyser
-            local geysers = player:get_collisions(Object.find("ror-geyser"))
             if colliding_geyser then
-                for k, v in pairs(geysers) do
-                    geysers = v
-                end
-                for k, v in pairs(geysers) do
-                    if k == "value" then
-                        Geyser = v
-                    end
-                end
+                Geyser = player:get_collisions(Object.find("ror-geyser"))[1].value
             else
                 --Reset Geyser after player exits it
                 if Geyser ~= nil then
@@ -65,8 +56,8 @@ Initialize(function()
                     if Geyser.disabled == nil or Geyser.disabled == 0 then
                         Geyser.jump_force_default = Geyser.jump_force
                     end
-                    if player:is_grounded() then
-                        Geyser.jump_force = -2
+                    if player.pVspeed == 0 then
+                        Geyser.jump_force = -15
                     else
                         Geyser.jump_force = -player.pVspeed
                     end
