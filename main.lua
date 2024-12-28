@@ -35,7 +35,7 @@ Initialize(function()
             end
             -- set airborne after colliding with geyser
             local colliding_geyser = false
-            if player[i] ~= nil and
+            if player[i] ~= nil and Instance.find({gm.constants.oGeyser, gm.constants.oGeyserWeak}).object_index ~= nil and
                 player[i]:is_colliding(
                     Object.wrap(Instance.find({gm.constants.oGeyser, gm.constants.oGeyserWeak}).object_index)) then
                 player[i].Airborne = true
@@ -97,7 +97,15 @@ gm.pre_script_hook(gm.constants.damage_inflict, function(self, other, result, ar
     end
 end)
 
+-- Gui
 gui.add_to_menu_bar(function()
     params.JumpToGeyser = ImGui.Checkbox("Jump to use geyser", params.JumpToGeyser)
     Toml.save_cfg(_ENV["!guid"], params)
+end)
+gui.add_imgui(function()
+    if ImGui.Begin("ArtificerPlus") then
+        params.JumpToGeyser = ImGui.Checkbox("Jump to use geyser", params.JumpToGeyser)
+        Toml.save_cfg(_ENV["!guid"], params)
+    end
+    ImGui.End()
 end)
