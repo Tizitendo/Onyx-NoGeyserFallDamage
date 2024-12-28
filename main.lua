@@ -87,6 +87,7 @@ Initialize(function()
         end
     end)
 end)
+end)
 
 -- set immune for 1 frame when landing
 gm.pre_script_hook(gm.constants.damage_inflict, function(self, other, result, args)
