@@ -1,3 +1,7 @@
+## 1.3.3
+* Updated with rmt
+* Fixed a lot of multiplayer stuff
+
 ## 1.3.2
 * Fixed crash that would occur on some maps
 
