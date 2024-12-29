@@ -54,7 +54,7 @@ Initialize(function()
             end
         end
 
-        Alarm.create(myFunc, 60)
+        Alarm.create(myFunc, 1)
         JumpToGeyserMP = {}
         player = {}
         Airborne = {}
