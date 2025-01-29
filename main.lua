@@ -13,140 +13,63 @@ mods.on_all_mods_loaded(function()
     params = Toml.config_update(_ENV["!guid"], params) -- Load Save
 end)
 
-local player = {}
-local Geyser = {}
-local Airborne = {}
-local JumpToGeyserMP = {}
 Initialize(function()
     local packetConfig = Packet.new()
-    local PlayerIndex = 1
-    Callback.add("onPlayerInit", "No_Geyser_FallDamage-onPlayerInit", function(self)
-        if not gm._mod_net_isOnline() then
-            if (Player.get_client():same(self)) then
-                player = {}
-                PlayerIndex = 1
-            end
-            player[PlayerIndex] = Wrap.wrap(self)
-            Airborne[PlayerIndex] = false
-            JumpToGeyserMP[PlayerIndex] = params.JumpToGeyser
-            PlayerIndex = PlayerIndex + 1
-        end
-    end)
 
-    Callback.add("onGameStart", "NoGeyserFallDamage-onGameStart", function()
-        local function myFunc()
-            if gm._mod_net_isOnline() then
-                if gm._mod_net_isClient() then
-                    local msg = packetConfig:message_begin()
-                    msg:write_instance(Player.get_client())
-                    msg:write_byte(params.JumpToGeyser)
-                    msg:send_to_host()
-                end
-                if gm._mod_net_isHost() then
-                    local msg = packetConfig:message_begin()
-                    msg:write_instance(Player.get_client())
-                    msg:write_byte(params.JumpToGeyser)
-                    msg:send_to_all()
+    Callback.add(Callback.TYPE.onGameStart, "NoGeyserFallDamage-onGameStart", function()
+        local function GameStart()
+            local playerdata = Player.get_client():get_data()
+            playerdata.Airborne = false
+            playerdata.JumpToGeyser = params.JumpToGeyser
 
-                    player[1] = Player.get_client()
-                    JumpToGeyserMP[1] = params.JumpToGeyser
-                end
+            if gm._mod_net_isOnline() and gm._mod_net_isClient() then
+                local msg = packetConfig:message_begin()
+                msg:write_instance(Player.get_client())
+                msg:write_byte(playerdata.JumpToGeyser)
+                msg:send_to_host()
             end
         end
-
-        Alarm.create(myFunc, 1)
-        JumpToGeyserMP = {}
-        player = {}
-        Airborne = {}
+        Alarm.create(GameStart, 1)
     end)
 
     packetConfig:onReceived(function(msg)
         local msgplayer = msg:read_instance()
-        player[msgplayer.m_id] = msgplayer
-        JumpToGeyserMP[msgplayer.m_id] = msg:read_byte()
-        Airborne[msgplayer.m_id] = false
-
-        if gm._mod_net_isHost() then
-            local msg = packetConfig:message_begin()
-            msg:write_instance(msgplayer)
-            msg:write_byte(JumpToGeyserMP[msgplayer.m_id])
-            msg:send_to_all()
-        end
+        msgplayer:get_data().JumpToGeyser = msg:read_byte()
     end)
 
-    Callback.add("onPlayerStep", "No_Geyser_FallDamage-onPlayerStep", function(self)
-        for i = 1, #player do
-            if player[i] ~= nil then
-                -- remove airborne after landing
-                if Airborne[i] and player[i]:is_grounded() then
-                    local function ResetAirborne()
-                        Airborne[i] = false
-                    end
-                    Alarm.create(ResetAirborne, 5)
-                end
-                -- set airborne after colliding with geyser
-                local colliding_geyser = false
-                if Instance.find({gm.constants.oGeyser, gm.constants.oGeyserWeak}).object_index ~= nil and
-                    player[i]:is_colliding(
-                        Object.wrap(Instance.find({gm.constants.oGeyser, gm.constants.oGeyserWeak}).object_index)) then
-                    Airborne[i] = true
-                    colliding_geyser = true
-                else
-                    colliding_geyser = false
-                end
-
-                if JumpToGeyserMP[i] == true or JumpToGeyserMP[i] == 1 then
-                    -- Get colldiding Geyser
-                    if colliding_geyser then
-                        Geyser[i] = player[i]:get_collisions(Object.wrap(
-                            Instance.find({gm.constants.oGeyser, gm.constants.oGeyserWeak}).object_index))[1].value
-                    else
-                        -- Reset Geyser after player exits it
-                        if Geyser[i] ~= nil then
-                            if Geyser[i].jump_force_default ~= nil then
-                                Geyser[i].jump_force = Geyser[i].jump_force_default
-                            end
-                            Geyser[i].sound_cd_frame = 0
-                            Geyser[i] = nil
-                        end
-                    end
-
-                    if Geyser[i] ~= nil then
-                        -- Disable Geyser
-                        -- you have to check for 0 and false because they are apparently different and on the client moveuphold is 0 and on host it's false for some reason
-                        if player[i].moveUpHold == 0 or player[i].moveUpHold == false then
-                            if Geyser[i].disabled == nil or Geyser[i].disabled == 0 then
-                                Geyser[i].jump_force_default = Geyser[i].jump_force
-                            end
-                            if player[i].pVspeed == 0 then
-                                Geyser[i].jump_force = -15
-                            else
-                                Geyser[i].jump_force = -player[i].pVspeed
-                            end
-                            Geyser[i].sound_cd_frame = 1000000 + Geyser[i].sound_cd_frame
-                            Geyser[i].disabled = 1
-                        else
-                            -- Enable Geyser
-                            if Geyser[i].disabled ~= nil and Geyser[i].disabled == 1 then
-                                Geyser[i].sound_cd_frame = 0
-                                Geyser[i].jump_force = Geyser[i].jump_force_default
-                                Geyser[i].disabled = 0
-                            end
-                        end
-                    end
+    gm.pre_code_execute("gml_Object_pGeyser_Collision_pActor", function(self, other)
+        local geyser = Instance.wrap(self)
+        local playerdata = Instance.wrap(other):get_data()
+        if gm.actor_is_player(other) then
+            playerdata.Airborne = true
+            if not gm.bool(other.moveUpHold) and playerdata.JumpToGeyser then
+                return false
+            end
+        else
+            local collision = geyser:get_collisions(gm.constants.oP)
+            for i = 1, #collision do
+                if not gm.bool(collision[i].moveUpHold) and Instance.wrap(collision[i]):get_data().JumpToGeyser then
+                    return false
                 end
             end
         end
     end)
-end)
 
--- set immune for 1 frame when landing
-gm.pre_script_hook(gm.constants.damage_inflict, function(self, other, result, args)
-    for i = 1, #player do
-        if Airborne[i] == 1 or Airborne[i] == true then
-            player[i]:set_immune(1)
+    local guarded = false
+    gm.pre_script_hook(gm.constants.actor_phy_on_landed, function(self, other, result, args)
+        if not gm.bool(self.invincible) and Instance.wrap(self):get_data().Airborne then
+            self.invincible = 1
+            guarded = true
         end
-    end
+    end)
+    gm.post_script_hook(gm.constants.actor_phy_on_landed, function(self, other, result, args)
+        local playerdata = Instance.wrap(self):get_data()
+        if playerdata.Airborne and guarded then
+            self.invincible = 0
+            guarded = false
+        end
+        playerdata.Airborne = false
+    end)
 end)
 
 -- Gui
