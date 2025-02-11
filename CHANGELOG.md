@@ -1,4 +1,4 @@
-## 1.3.4
+## 1.4.0
 * fixed multiplayer bugs
 * fixed more bugs
 * Reworked everything to be more consistent
