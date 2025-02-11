@@ -1,3 +1,8 @@
+## 1.3.4
+* fixed multiplayer bugs
+* fixed more bugs
+* Reworked everything to be more consistent
+
 ## 1.3.3
 * Updated with rmt
 * Fixed a lot of multiplayer stuff
