@@ -1,3 +1,6 @@
+## 1.4.1
+* Fixed taking falldamage if you hit the ceiling before landing
+
 ## 1.4.0
 * fixed multiplayer bugs
 * fixed more bugs

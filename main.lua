@@ -55,6 +55,15 @@ Initialize(function()
         end
     end)
 
+    Callback.add(Callback.TYPE.onPlayerStep, "OnyxNoGeyserFallDamage-onPlayerStep", function(player)
+        if player:get_data().Airborne and player:is_grounded() then
+            local function ResetAirborne()
+                player:get_data().Airborne = false
+            end
+            Alarm.create(ResetAirborne, 5)
+        end
+    end)
+
     local guarded = false
     gm.pre_script_hook(gm.constants.actor_phy_on_landed, function(self, other, result, args)
         if not gm.bool(self.invincible) and Instance.wrap(self):get_data().Airborne then
@@ -68,7 +77,7 @@ Initialize(function()
             self.invincible = 0
             guarded = false
         end
-        playerdata.Airborne = false
+        --playerdata.Airborne = false
     end)
 end)
 
